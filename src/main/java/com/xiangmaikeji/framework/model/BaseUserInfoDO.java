@@ -59,7 +59,7 @@ public class BaseUserInfoDO extends BaseEntity {
     private String  user_info_phone;
 
     @ApiModelProperty(value = "user_info_is_delete",example = "1")
-    private Long  user_info_is_delete;
+    private Integer  user_info_is_delete;
 
     @ApiModelProperty(value = "user_lock_version",example = "1")
     private String  user_lock_version;
@@ -106,11 +106,11 @@ public class BaseUserInfoDO extends BaseEntity {
         this.user_info_phone = user_info_phone;
     }
 
-    public Long getUser_info_is_delete() {
+    public Integer getUser_info_is_delete() {
         return user_info_is_delete;
     }
 
-    public void setUser_info_is_delete(Long user_info_is_delete) {
+    public void setUser_info_is_delete(Integer user_info_is_delete) {
         this.user_info_is_delete = user_info_is_delete;
     }
 

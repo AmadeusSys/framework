@@ -25,11 +25,21 @@
 package com.xiangmaikeji.framework.service;
 
 import com.xiangmaikeji.framework.mapper.BaseUserInfoMapper;
+import com.xiangmaikeji.framework.mapper.RuleMapper;
 import com.xiangmaikeji.framework.model.BaseUserInfoDO;
+import com.xiangmaikeji.framework.model.permission.RuleDO;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,10 +47,44 @@ import java.util.List;
  * @since 2015-12-19 11:09
  */
 @Service
-public class BaseUserInfoService {
+public class BaseUserInfoService implements UserDetailsService {
 
     @Autowired
     private BaseUserInfoMapper baseUserInfoMapper;
+
+    @Autowired
+    private RuleMapper ruleMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+
+        BaseUserInfoDO baseUserInfoDO = baseUserInfoMapper.getUserInfoDOByToken(s);
+
+        if (baseUserInfoDO == null){
+            throw new UsernameNotFoundException(s);
+        }
+
+        List<GrantedAuthority> grantedAuthorities = new ArrayList();
+
+        List<RuleDO> ruleDOS = ruleMapper.listRuleByUserId(s);
+
+        //添加权限到集合中
+        for (RuleDO role : ruleDOS){
+            if (role != null && role.getRule_name() != null) {
+
+                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getRule_name());
+
+                grantedAuthorities.add(grantedAuthority);
+
+            }
+        }
+
+        User user = new User(baseUserInfoDO.getUser_info_name(),"123546", grantedAuthorities);
+
+        return user;
+
+    }
+
 
     public List<BaseUserInfoDO> getAll(BaseUserInfoDO baseUserInfoDO) {
         return baseUserInfoMapper.selectAll();

@@ -1,5 +1,7 @@
 package com.xiangmaikeji.framework.configure;
 
+import com.xiangmaikeji.framework.service.BaseUserInfoService;
+import com.xiangmaikeji.framework.service.security.MyFilterSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +11,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//开启security注解
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
 
     @Bean
     @Override
@@ -21,10 +28,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+    @Bean
+    UserDetailsService customUserService(){ //注册UserDetailsService 的bean
+        return new BaseUserInfoService();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserService()); //user Details Service验证
+
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/home").permitAll().anyRequest().authenticated();
+        http.authorizeRequests()
+                .anyRequest().authenticated() //任何请求,登录后可以访问
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login?error")
+                .permitAll() //登录页面用户任意访问
+                .and()
+                .logout().permitAll(); //注销行为任意访问
+
+        http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class).csrf().disable();
+
     }
 
     @Autowired
@@ -32,30 +60,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication() .withUser("user").password("password").roles("USER");
     }
 
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//
-//        auth.userDetailsService(customUserDetailsService()).passwordEncoder(passwordEncoder());
-//
-//    }
-
-//    /**
-//     * 设置用户密码的加密方式为MD5加密
-//     * @return
-//     */
-//    @Bean
-//    public Md5PasswordEncoder passwordEncoder() {
-//        return new Md5PasswordEncoder();
-//
-//    }
-//
-//    /**
-//     * 自定义UserDetailsService，从数据库中读取用户信息
-//     * @return
-//     */
-//    @Bean
-//    public CustomUserDetailsService customUserDetailsService(){
-//        return new CustomUserDetailsService();
-//    }
 
 }

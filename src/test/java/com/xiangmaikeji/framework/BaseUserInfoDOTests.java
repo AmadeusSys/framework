@@ -1,5 +1,6 @@
 package com.xiangmaikeji.framework;
 
+import com.xiangmaikeji.framework.mapper.RuleMapper;
 import com.xiangmaikeji.framework.model.BaseUserInfoDO;
 import com.xiangmaikeji.framework.service.BaseUserInfoService;
 import org.junit.Test;
@@ -17,16 +18,15 @@ public class BaseUserInfoDOTests {
     @Autowired
     BaseUserInfoService baseUserInfoService;
 
+    @Autowired
+    RuleMapper ruleMapper;
+
     @Test
     public void test(){
 
-        BaseUserInfoDO baseUserInfoDO = new BaseUserInfoDO();
+        List rule = ruleMapper.listRuleByUserId("32402d2f73a511e7b47600163e00591d");
 
-        baseUserInfoDO.setPage(2);
-
-        List list = baseUserInfoService.getAll(baseUserInfoDO);
-
-        System.out.println(list);
+        System.out.println(rule);
 
     }
 

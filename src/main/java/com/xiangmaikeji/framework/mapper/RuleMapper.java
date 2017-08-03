@@ -25,16 +25,19 @@
 package com.xiangmaikeji.framework.mapper;
 
 import com.xiangmaikeji.framework.common.MyMapper;
+import com.xiangmaikeji.framework.mapper.provider.RuleProvider;
 import com.xiangmaikeji.framework.mapper.provider.UserInfoProvider;
 import com.xiangmaikeji.framework.model.BaseUserInfoDO;
+import com.xiangmaikeji.framework.model.permission.RuleDO;
 import org.apache.ibatis.annotations.SelectProvider;
+
+import java.util.List;
 
 /**
  * @author liuzh_3nofxnp
  * @since 2016-01-22 22:17
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
-
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+public interface RuleMapper extends MyMapper<RuleDO> {
+    @SelectProvider(type = RuleProvider.class,method = "listRuleByUserIdProvider")
+    List<RuleDO> listRuleByUserId(String userId);
 }
