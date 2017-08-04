@@ -25,13 +25,16 @@
 package com.xiangmaikeji.framework.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xiangmaikeji.framework.common.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -41,7 +44,7 @@ import java.util.Date;
  * @since 2016-01-31 21:39
  */
 @Table(name = "t_user_base_info")
-public class BaseUserInfoDO extends BaseEntity {
+public class BaseUserInfoDO extends BaseEntity implements UserDetails {
 
     @ApiModelProperty(value = "user_info_id",example = "1")
     private String  user_info_id;
@@ -59,12 +62,15 @@ public class BaseUserInfoDO extends BaseEntity {
     private String  user_info_phone;
 
     @ApiModelProperty(value = "user_info_is_delete",example = "1")
-    private Integer  user_info_is_delete;
+    private Boolean  user_info_is_delete;
 
     @ApiModelProperty(value = "user_lock_version",example = "1")
     private String  user_lock_version;
 
     private Date user_update_time;
+
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
 
     public String getUser_info_id() {
         return user_info_id;
@@ -106,11 +112,11 @@ public class BaseUserInfoDO extends BaseEntity {
         this.user_info_phone = user_info_phone;
     }
 
-    public Integer getUser_info_is_delete() {
+    public Boolean getUser_info_is_delete() {
         return user_info_is_delete;
     }
 
-    public void setUser_info_is_delete(Integer user_info_is_delete) {
+    public void setUser_info_is_delete(Boolean user_info_is_delete) {
         this.user_info_is_delete = user_info_is_delete;
     }
 
@@ -130,6 +136,10 @@ public class BaseUserInfoDO extends BaseEntity {
         this.user_update_time = user_update_time;
     }
 
+    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
+
     @Override
     public String toString() {
         return "UserInfoDO{" +
@@ -142,5 +152,40 @@ public class BaseUserInfoDO extends BaseEntity {
                 ", user_lock_version='" + user_lock_version + '\'' +
                 ", user_update_time=" + user_update_time +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return user_info_id;
+    }
+
+    @Override
+    public String getUsername() {
+        return user_info_id;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.user_info_is_delete;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

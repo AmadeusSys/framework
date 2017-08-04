@@ -20,10 +20,11 @@ public class UserInfoProvider {
      */
     public String getUserInfoDOByTokenProvider(String token){
 
-        String subSQL = new SQL().SELECT("FROM").FROM("t_user_token").WHERE("ut_id = #{token}").toString();
+        String subSQL = new SQL().SELECT("ut_user_id").FROM("t_user_token").WHERE("ut_id = #{token}").toString();
 
-        return new SQL().SELECT(BASE_FIELD).FROM(TABLE_NAME).WHERE("user_info_id = #{subSQL}").toString();
+        String sql = new SQL().SELECT(BASE_FIELD).FROM(TABLE_NAME).WHERE(String.format("user_info_id = (%s)",subSQL)).toString();
 
+        return sql;
     }
 
     /**

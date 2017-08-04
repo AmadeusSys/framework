@@ -1,7 +1,9 @@
 package com.xiangmaikeji.framework.configure;
 
 import com.xiangmaikeji.framework.service.BaseUserInfoService;
+import com.xiangmaikeji.framework.service.security.MyAuthenticationProvider;
 import com.xiangmaikeji.framework.service.security.MyFilterSecurityInterceptor;
+import com.xiangmaikeji.framework.service.security.ServiceUnauthorizedEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +13,19 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.HttpRequestResponseHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -20,45 +33,50 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
+    private UserDetailsService userDetailsService;
 
-    @Bean
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+    @Autowired
+    private ServiceUnauthorizedEntryPoint serviceUnauthorizedEntryPoint;
+
+    @Autowired
+    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
-    UserDetailsService customUserService(){ //注册UserDetailsService 的bean
-        return new BaseUserInfoService();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserService()); //user Details Service验证
-
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().authenticated() //任何请求,登录后可以访问
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login?error")
-                .permitAll() //登录页面用户任意访问
-                .and()
-                .logout().permitAll(); //注销行为任意访问
 
-        http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class).csrf().disable();
+        //无需权限的路径
+        http.authorizeRequests().antMatchers("/login").permitAll();
+
+        //需要权限的路径
+        http.authorizeRequests().anyRequest().authenticated();
+
+        //无权限的空处理
+        http.exceptionHandling().authenticationEntryPoint(serviceUnauthorizedEntryPoint);
+
+        //不使用session
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //禁用CSRF
+        http.csrf().disable();
+
+        //添加过滤器
+        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+        //禁止缓存
+        http.headers().cacheControl();
 
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication() .withUser("user").password("password").roles("USER");
+    @Bean
+    public MyFilterSecurityInterceptor authenticationTokenFilterBean() throws Exception {
+        return new MyFilterSecurityInterceptor();
     }
-
 
 }

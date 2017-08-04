@@ -1,10 +1,24 @@
 package com.xiangmaikeji.framework;
 
+import com.xiangmaikeji.framework.mapper.BaseUserInfoMapper;
+import com.xiangmaikeji.framework.service.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Controller
 public class HomeController {
+
+    @Autowired
+    TokenService tokenService;
+
+    @Autowired
+    BaseUserInfoMapper baseUserInfoMapper;
 
     @RequestMapping("/")
     public String index(){
@@ -20,8 +34,15 @@ public class HomeController {
     }
 
     @RequestMapping("/login")
-    public String login(){
-        return "login";
+    @ResponseBody
+    public String login(String userId){
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId,"null" );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return tokenService.getToken(userId);
+
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
