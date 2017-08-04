@@ -32,6 +32,7 @@ import com.xiangmaikeji.framework.model.permission.RuleDO;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liuzh_3nofxnp
@@ -40,4 +41,7 @@ import java.util.List;
 public interface RuleMapper extends MyMapper<RuleDO> {
     @SelectProvider(type = RuleProvider.class,method = "listRuleByUserIdProvider")
     List<RuleDO> listRuleByUserId(String userId);
+
+    @SelectProvider(type = RuleProvider.class,method = "getRuleByUserIdAndPath")
+    RuleDO getRuleByUserIdAndPath(Map condition);
 }

@@ -7,27 +7,19 @@ import com.xiangmaikeji.framework.model.BaseUserInfoDO;
 import com.xiangmaikeji.framework.model.permission.RuleDO;
 import com.xiangmaikeji.framework.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.SecurityMetadataSource;
-import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
-import org.springframework.security.access.intercept.InterceptorStatusToken;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class MyFilterSecurityInterceptor extends OncePerRequestFilter {
@@ -47,6 +39,8 @@ public class MyFilterSecurityInterceptor extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
+        String url = httpServletRequest.getServletPath().toUpperCase();
+
         String authToken = httpServletRequest.getParameter(this.tokenHeader);
 
         if (!StringUtils.isEmpty(authToken) && tokenService.validateToken(authToken)){
@@ -55,17 +49,30 @@ public class MyFilterSecurityInterceptor extends OncePerRequestFilter {
 
             if (baseUserInfoDO != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                List<RuleDO> ruleDOS = ruleMapper.listRuleByUserId(baseUserInfoDO.getUser_info_id());
+                Map map = new HashMap<>();
+
+                map.put("path",url);
+
+                map.put("userId",baseUserInfoDO.getUser_info_id());
+
+                RuleDO ruleDOa = ruleMapper.getRuleByUserIdAndPath(map);
 
                 logger.info("checking authentication für user " + baseUserInfoDO.getUser_info_id());
 
                 Collection<SimpleGrantedAuthority> collection = new ArrayList();
 
-                for (RuleDO ruleDO : ruleDOS) {
-                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_"+ruleDO.getRule_name());
+                if (ruleDOa != null){
+
+                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_"+ruleDOa.getRule_name());
+
                     collection.add(simpleGrantedAuthority);
+
+                }else{
+
+                    throw new AccessDeniedException("no right");
+
                 }
-                
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(baseUserInfoDO, null,collection);
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

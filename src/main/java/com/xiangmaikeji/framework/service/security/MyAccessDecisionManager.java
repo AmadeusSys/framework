@@ -23,15 +23,13 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 
         for (GrantedAuthority ga : authentication.getAuthorities()) {
 
-            String url = ga.getAuthority();
+            String url = ga.getAuthority().toUpperCase();
 
-            AntPathRequestMatcher matcher = new AntPathRequestMatcher(url);
+            String path = "ROLE_"+request.getServletPath().toUpperCase();
 
-                if (matcher.matches(request)) {
-
-                        return;
-
-                }
+               if (url.equals(path)){
+                   return;
+               }
 
         }
 
