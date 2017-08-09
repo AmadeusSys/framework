@@ -1,6 +1,5 @@
 package data.provider;
 
-import data.model.BaseUserInfoDO;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;

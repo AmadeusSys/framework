@@ -25,16 +25,21 @@
 package data.mapper;
 
 import data.common.MyMapper;
-import data.provider.UserInfoProvider;
-import data.model.data.object.BaseUserInfoDO;
+import data.model.data.object.ProductDO;
+import data.provider.ProductProvider;
 import org.apache.ibatis.annotations.SelectProvider;
+
+import java.util.List;
 
 /**
  * @author liuzh_3nofxnp
  * @since 2016-01-22 22:17
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
+public interface ProductMapper extends MyMapper<ProductDO> {
 
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+    @SelectProvider(type = ProductProvider.class,method = "listProductProvider")
+    List<ProductDO> listProductDO(ProductDO productDO);
+
+    ProductDO getProductDo(ProductDO productDO);
+
 }

@@ -1,4 +1,4 @@
-package data.model.permission;
+package data.model.data.object.permission;
 
 import javax.persistence.Table;
 

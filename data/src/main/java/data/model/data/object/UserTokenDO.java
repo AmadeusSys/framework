@@ -1,4 +1,4 @@
-package data.model;
+package data.model.data.object;
 
 import data.provider.UserTokenProvider;
 
@@ -15,6 +15,20 @@ public class UserTokenDO {
     private Date ut_create_time;
     private Date ut_update_time;
     private Boolean ut_is_delete;
+
+    //初始化一个Token
+
+    public static UserTokenDO init(String deviesId, String userId){
+
+        UserTokenDO userTokenDO = new UserTokenDO();
+
+        userTokenDO.setUt_user_id(userId);
+
+        userTokenDO.setUt_devices_tag(deviesId);
+
+        return userTokenDO;
+
+    }
 
     public String getUt_id() {
         return ut_id;

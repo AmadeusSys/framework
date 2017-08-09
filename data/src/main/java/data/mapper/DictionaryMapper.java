@@ -24,17 +24,23 @@
 
 package data.mapper;
 
-import data.common.MyMapper;
-import data.provider.UserInfoProvider;
-import data.model.data.object.BaseUserInfoDO;
+
+
+import data.model.data.object.DictionaryDO;
+import data.provider.DictionaryProvider;
 import org.apache.ibatis.annotations.SelectProvider;
+
+import java.util.List;
 
 /**
  * @author liuzh_3nofxnp
  * @since 2016-01-22 22:17
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
+public interface DictionaryMapper {
 
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+    @SelectProvider(type = DictionaryProvider.class ,method = "listDictionaryProvider")
+    List<DictionaryDO> listDictionary(DictionaryDO dictionaryDO);
+
+    @SelectProvider(type = DictionaryProvider.class ,method = "getDictionaryProvider")
+    DictionaryDO getDictionary(String id);
 }

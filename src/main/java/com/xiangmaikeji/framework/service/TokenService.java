@@ -1,7 +1,7 @@
 package com.xiangmaikeji.framework.service;
 
 import data.mapper.UserTokenMapper;
-import data.model.UserTokenDO;
+import data.model.data.object.UserTokenDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

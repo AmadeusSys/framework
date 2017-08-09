@@ -1,6 +1,6 @@
 package data.provider;
 
-import data.model.UserTokenDO;
+import data.model.data.object.UserTokenDO;
 import org.apache.ibatis.jdbc.SQL;
 
 /**

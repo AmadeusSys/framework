@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package data.model;
+package data.model.data.object;
 
 
 

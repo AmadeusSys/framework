@@ -26,7 +26,7 @@ package data.mapper;
 
 
 import data.common.MyMapper;
-import data.model.permission.RuleDO;
+import data.model.data.object.permission.RuleDO;
 import data.provider.RuleProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;

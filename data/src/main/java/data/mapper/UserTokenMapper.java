@@ -26,8 +26,7 @@ package data.mapper;
 
 import data.common.MyMapper;
 import data.provider.UserTokenProvider;
-import data.model.BaseUserInfoDO;
-import data.model.UserTokenDO;
+import data.model.data.object.UserTokenDO;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectKey;
 

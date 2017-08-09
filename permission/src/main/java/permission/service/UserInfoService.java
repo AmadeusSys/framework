@@ -22,19 +22,43 @@
  * THE SOFTWARE.
  */
 
-package data.mapper;
+package permission.service;
 
-import data.common.MyMapper;
-import data.provider.UserInfoProvider;
-import data.model.data.object.BaseUserInfoDO;
-import org.apache.ibatis.annotations.SelectProvider;
+
+import data.mapper.UserInfoMapper;
+import data.model.data.object.UserInfoDO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
 /**
- * @author liuzh_3nofxnp
- * @since 2016-01-22 22:17
+ * @author liuzh
+ * @since 2016-01-31 21:42
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
+@Service
+public class UserInfoService {
 
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+
+    public UserInfoDO insertUserInfo(){
+
+        UserInfoDO userInfoDO = new UserInfoDO();
+
+        userInfoDO.setUser_info_name("佟阳");
+
+        userInfoDO.setUser_info_union_id("asfadf");
+
+        userInfoDO.setUser_info_head_portraits("佟阳");
+
+        userInfoMapper.saveUserInfoDO(userInfoDO);
+
+        return userInfoDO;
+
+    }
+
 }

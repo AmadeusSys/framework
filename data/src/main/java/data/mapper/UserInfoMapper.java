@@ -24,17 +24,34 @@
 
 package data.mapper;
 
-import data.common.MyMapper;
+
+
+import data.model.data.object.UserInfoDO;
 import data.provider.UserInfoProvider;
-import data.model.data.object.BaseUserInfoDO;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 
 /**
  * @author liuzh_3nofxnp
  * @since 2016-01-22 22:17
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
+public interface UserInfoMapper {
 
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+     @InsertProvider(type = UserInfoProvider.class,method = "insertUserInfoProvider")
+     @SelectKey(statement="select replace(uuid(),'-','') from dual", keyProperty="user_info_id", before=true, resultType=String.class)
+     Long addUserInfoDO(UserInfoDO userInfoDO);
+
+     @InsertProvider(type = UserInfoProvider.class,method = "updateUserInfoDOProvider")
+     Long saveUserInfoDO(UserInfoDO userInfo);
+
+     @InsertProvider(type = UserInfoProvider.class,method = "duplicateUserInfoDOProvider")
+     Long duplicateUserInfoDO(UserInfoDO userInfoDO);
+
+     @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOProvider")
+     UserInfoDO getUserInfoDO(UserInfoDO userInfoDO);
+
+     @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
+     UserInfoDO getUserInfoDOByToken(String token);
+
 }

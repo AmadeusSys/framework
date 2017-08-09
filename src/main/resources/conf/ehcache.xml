@@ -1,0 +1,21 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd">
+    <!--钉钉系统token缓存-->
+    <cache name="tokenModel"
+           maxEntriesLocalHeap="200"
+           timeToLiveSeconds="7000">
+    </cache>
+
+    <!--钉钉系统票据缓存-->
+    <cache name="ticketModel"
+           maxEntriesLocalHeap="200"
+           timeToLiveSeconds="7000">
+    </cache>
+
+    <!--钉钉系统用户信息缓存-->
+    <cache name="DDUserDetailsnModel"
+           maxEntriesLocalHeap="200"
+           timeToLiveSeconds="7000">
+    </cache>
+
+</ehcache>

@@ -1,7 +1,7 @@
 package data.provider;
 
 import com.alibaba.druid.util.StringUtils;
-import data.model.BaseUserInfoDO;
+import data.model.data.object.BaseUserInfoDO;
 import org.apache.ibatis.jdbc.SQL;
 
 /**
