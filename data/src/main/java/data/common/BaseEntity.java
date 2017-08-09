@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.xiangmaikeji.framework.common;
+package data.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.pagehelper.PageHelper;

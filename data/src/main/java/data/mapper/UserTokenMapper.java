@@ -22,19 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.xiangmaikeji.framework.mapper;
+package data.mapper;
 
-import com.xiangmaikeji.framework.common.MyMapper;
-import com.xiangmaikeji.framework.mapper.provider.UserInfoProvider;
-import com.xiangmaikeji.framework.model.BaseUserInfoDO;
-import org.apache.ibatis.annotations.SelectProvider;
+import data.common.MyMapper;
+import data.provider.UserTokenProvider;
+import data.model.BaseUserInfoDO;
+import data.model.UserTokenDO;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.SelectKey;
 
 /**
  * @author liuzh_3nofxnp
  * @since 2016-01-22 22:17
  */
-public interface BaseUserInfoMapper extends MyMapper<BaseUserInfoDO> {
+public interface UserTokenMapper extends MyMapper<UserTokenDO> {
 
-    @SelectProvider(type = UserInfoProvider.class,method = "getUserInfoDOByTokenProvider")
-    BaseUserInfoDO getUserInfoDOByToken(String token);
+    @InsertProvider(type = UserTokenProvider.class,method = "addUserToken")
+    @SelectKey(statement="select replace(uuid(),'-','') from dual", keyProperty="ut_id", before=true, resultType=String.class)
+    Integer addUserToken(UserTokenDO userTokenDO);
+
 }

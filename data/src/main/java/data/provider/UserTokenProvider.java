@@ -1,6 +1,6 @@
-package com.xiangmaikeji.framework.mapper.provider;
+package data.provider;
 
-import com.xiangmaikeji.framework.model.UserTokenDO;
+import data.model.UserTokenDO;
 import org.apache.ibatis.jdbc.SQL;
 
 /**

@@ -1,8 +1,5 @@
-package com.xiangmaikeji.framework;
 
-import com.xiangmaikeji.framework.mapper.RuleMapper;
-import com.xiangmaikeji.framework.model.BaseUserInfoDO;
-import com.xiangmaikeji.framework.service.BaseUserInfoService;
+import data.mapper.RuleMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +12,7 @@ import java.util.List;
 @SpringBootTest
 public class BaseUserInfoDOTests {
 
-    @Autowired
-    BaseUserInfoService baseUserInfoService;
+
 
     @Autowired
     RuleMapper ruleMapper;

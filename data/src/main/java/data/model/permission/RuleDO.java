@@ -1,4 +1,4 @@
-package com.xiangmaikeji.framework.model.permission;
+package data.model.permission;
 
 import javax.persistence.Table;
 

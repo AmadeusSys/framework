@@ -1,7 +1,6 @@
-package com.xiangmaikeji.framework.mapper.provider;
+package data.provider;
 
-import com.alibaba.druid.util.StringUtils;
-import com.xiangmaikeji.framework.model.BaseUserInfoDO;
+import data.model.BaseUserInfoDO;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;

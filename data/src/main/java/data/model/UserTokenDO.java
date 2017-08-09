@@ -1,6 +1,6 @@
-package com.xiangmaikeji.framework.model;
+package data.model;
 
-import com.xiangmaikeji.framework.mapper.provider.UserTokenProvider;
+import data.provider.UserTokenProvider;
 
 import javax.persistence.Table;
 import java.util.Date;

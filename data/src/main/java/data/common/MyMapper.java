@@ -22,26 +22,18 @@
  * THE SOFTWARE.
  */
 
-package com.xiangmaikeji.framework.mapper;
+package data.common;
 
-import com.xiangmaikeji.framework.common.MyMapper;
-import com.xiangmaikeji.framework.mapper.provider.RuleProvider;
-import com.xiangmaikeji.framework.mapper.provider.UserInfoProvider;
-import com.xiangmaikeji.framework.model.BaseUserInfoDO;
-import com.xiangmaikeji.framework.model.permission.RuleDO;
-import org.apache.ibatis.annotations.SelectProvider;
-
-import java.util.List;
-import java.util.Map;
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 /**
- * @author liuzh_3nofxnp
- * @since 2016-01-22 22:17
+ * 继承自己的MyMapper
+ *
+ * @author liuzh
+ * @since 2015-09-06 21:53
  */
-public interface RuleMapper extends MyMapper<RuleDO> {
-    @SelectProvider(type = RuleProvider.class,method = "listRuleByUserIdProvider")
-    List<RuleDO> listRuleByUserId(String userId);
-
-    @SelectProvider(type = RuleProvider.class,method = "getRuleByUserIdAndPath")
-    RuleDO getRuleByUserIdAndPath(Map condition);
+public interface MyMapper<T> extends Mapper<T>, MySqlMapper<T> {
+    //TODO
+    //FIXME 特别注意，该接口不能被扫描到，否则会出错
 }
